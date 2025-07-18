@@ -25,12 +25,12 @@ public class MetaDataParser {
         }
 
         try {
-            return new Column(parts[0], Integer.parseInt(parts[1]), ColumnType.valueOf(parts[2]));
+            return new Column(parts[0], Integer.parseInt(parts[1]), ColumnType.fromType(parts[2]));
         } catch (NumberFormatException _) {
-            System.err.println("line " + lineNumber + ": Invalid numeric value for size: " + parts[1] + ".");
+            System.err.println("Metadata line " + lineNumber + ": Invalid numeric value for size: " + parts[1] + ".");
             System.exit(1);
         } catch (IllegalArgumentException _) {
-            System.err.println("line " + lineNumber + ": Unsupported column type:" + parts[2] + ".");
+            System.err.println("Metadata line " + lineNumber + ": Unsupported column type:" + parts[2] + ".");
             System.exit(1);
         }
         return null; // This should never happen

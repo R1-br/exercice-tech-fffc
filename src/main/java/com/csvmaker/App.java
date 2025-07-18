@@ -21,6 +21,7 @@ public class App
             csvStandaloneTransaction.process();
         } catch (Exception e) {
             System.err.println("Error while processing CSV data: " + e.getMessage());
+            e.printStackTrace();
             System.exit(1);
         }
     }

@@ -50,9 +50,12 @@ public class CsvStandaloneTransaction {
             if (line.isEmpty()) {
                 continue;
             }
+            String csvRecord = dataMapper.mapLine(columns, line, lineNumber);
 
-            writer.write(dataMapper.mapLine(columns, line, lineNumber));
-            writer.write(LINE_SEPARATOR);
+            if (csvRecord != null) {
+                writer.write(csvRecord);
+                writer.write(LINE_SEPARATOR);
+            }
         }
 
         //Close streams
