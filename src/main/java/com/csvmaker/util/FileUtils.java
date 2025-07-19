@@ -19,7 +19,7 @@ public class FileUtils {
             InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(filePath), INPUT_ENCODING);
             return new BufferedReader(inputStreamReader);
         } catch (FileNotFoundException _) {
-            System.err.println("MetaData File not found: " + filePath);
+            System.err.println("File not found: " + filePath);
             System.exit(1);
         }
 

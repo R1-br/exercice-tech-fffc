@@ -16,7 +16,7 @@ public class CsvStandaloneTransaction {
     private final String outputFilePath;
 
     private final MetaDataParser metaDataParser = new MetaDataParser();
-    private final dataMapper dataMapper = new dataMapper();
+    private final DataMapper dataMapper = new DataMapper();
 
     public CsvStandaloneTransaction(String metaDataFilePath, String dataFilePath, String outputFilePath) {
         this.metaDataFilePath = metaDataFilePath;
@@ -47,15 +47,18 @@ public class CsvStandaloneTransaction {
         int lineNumber = 1;
 
         while ((line = dataReader.readLine()) != null) {
-            if (line.isEmpty()) {
+            if (line.isEmpty() || line.trim().isEmpty()) {
                 continue;
             }
+
             String csvRecord = dataMapper.mapLine(columns, line, lineNumber);
 
             if (csvRecord != null) {
                 writer.write(csvRecord);
                 writer.write(LINE_SEPARATOR);
             }
+
+            lineNumber++;
         }
 
         //Close streams
