@@ -9,6 +9,8 @@ public class FileUtils {
     private static final Charset OUTPUT_ENCODING = StandardCharsets.UTF_8;
     private static final String OUTPUT_EXTENSION = ".csv";
 
+    private FileUtils() {}
+    
     /**
      * Get a reader for the given file.
      * @param filePath the file path
@@ -17,6 +19,7 @@ public class FileUtils {
     public static BufferedReader getReader(String filePath) {
         try {
             InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(filePath), INPUT_ENCODING);
+            
             return new BufferedReader(inputStreamReader);
         } catch (FileNotFoundException _) {
             System.err.println("File not found: " + filePath);
@@ -40,6 +43,7 @@ public class FileUtils {
                 file.createNewFile();
             }
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(new FileOutputStream(file), OUTPUT_ENCODING);
+            
             return new BufferedWriter(outputStreamWriter);
         } catch (IOException _) {
             System.err.println("Failed to create Output operation: " + filePath);

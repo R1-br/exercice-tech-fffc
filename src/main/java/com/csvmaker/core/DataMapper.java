@@ -9,11 +9,29 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 import static java.lang.Double.parseDouble;
+import static java.lang.Long.parseLong;
 
 public class DataMapper {
     private static final String SEPARATOR = ",";
     private static final String INPUT_DATE_FORMAT = "yyyy-MM-dd";
     private static final String OUTPUT_DATE_FORMAT = "dd/MM/yyyy";
+
+    /**
+     * Returns the index of the first non-numerical character in the input line
+     * or last character of the input line if no non-numerical character is found.
+     * @param inputLine the input line
+     * @return the index of the first non-numerical character or last character
+     */
+    private int getFirstNonNumericalIndex(String inputLine) {
+        int index = 0;
+
+        while (index < inputLine.length()
+                && (Character.isDigit(inputLine.charAt(index)) || inputLine.charAt(index) == '.' || inputLine.charAt(index) == '-')) {
+            index++;
+        }
+
+        return index;
+    }
 
     private String processDate(Column column, String inputLine, int lineNumber) {
         String dateSubstring = inputLine.substring(0, Math.min(column.size(), inputLine.length()));
@@ -32,12 +50,14 @@ public class DataMapper {
         return null;
     }
     private String processNumber(Column column, String inputLine, int lineNumber) {
-        String numberSubstring = inputLine.substring(0, Math.min(column.size(), inputLine.length()));
+        String numberSubstring = inputLine.substring(0, Math.min(column.size(), getFirstNonNumericalIndex(inputLine)));
 
         try {
-            Double number = parseDouble(numberSubstring);
-
-            return number.toString();
+            if (numberSubstring.contains(".")) {
+                return Double.toString(parseDouble(numberSubstring));
+            } else {
+                return Long.toString(parseLong(numberSubstring));
+            }
         } catch (NumberFormatException _) {
             System.err.println("Invalid Number at line " + lineNumber + "for column " + column.name() + ": " + numberSubstring);
             System.exit(1);
@@ -49,10 +69,10 @@ public class DataMapper {
         //Starting with double quotes -> quoted string, else normal string
         if (isQuoted) {
             inputLine = inputLine.substring(1);
-            int endIndex = inputLine.indexOf("\"", 0);
+            int nextQuoteIndex = inputLine.indexOf("\"");
             //return all chars until the next double quote or end of line or max column size
-            if (endIndex > 0) {
-                return inputLine.substring(0, Math.min(inputLine.length() - 1, endIndex));
+            if (nextQuoteIndex > 0) {
+                return inputLine.substring(0, Math.min(inputLine.length() - 1, nextQuoteIndex));
             } else {
                 return inputLine.substring(2, Math.min(inputLine.length() - 1, column.size()));
             }
@@ -67,6 +87,7 @@ public class DataMapper {
             }
         }
     }
+    
     /**
      * Map a line of data to a CSV record based on the given columns.
      * @param columns the columns
@@ -89,17 +110,15 @@ public class DataMapper {
                     yield processString(column, inputLine, isQuoted);
                 }
             };
-
             if (!cellContent.isEmpty()) {
                 csvRecord.append(cellContent);
             }
-
+            
             inputLine = inputLine.substring(Math.min(inputLine.length(), cellContent.length() + (isQuoted ? 2 : 0)));
-
+            
             if (inputLine.isEmpty()) {
                 break;
             }
-
             if (columnIndex <= columns.size()) {
                 csvRecord.append(SEPARATOR);
             }

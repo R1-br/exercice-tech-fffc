@@ -11,7 +11,7 @@ public class App
     public static void main( String[] args )
     {
         if (args.length < 3) {
-            System.out.println("Usage: java -jar <metadata_file> <data_file> <output_path>");
+            System.out.println("Usage: java -jar <metadata_file> <data_file> <output_file>");
             System.exit(1);
         }
 
