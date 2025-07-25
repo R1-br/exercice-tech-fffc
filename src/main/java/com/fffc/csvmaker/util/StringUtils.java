@@ -1,4 +1,4 @@
-package com.csvmaker.util;
+package com.fffc.csvmaker.util;
 
 public class StringUtils {
     private static final String DOUBLE_QUOTES = "\"";

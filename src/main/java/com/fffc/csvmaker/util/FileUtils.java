@@ -1,13 +1,19 @@
-package com.csvmaker.util;
+package com.fffc.csvmaker.util;
 
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class FileUtils {
     public static final Charset INPUT_ENCODING = StandardCharsets.UTF_8;
-    private static final Charset OUTPUT_ENCODING = StandardCharsets.UTF_8;
+    public static final Charset OUTPUT_ENCODING = StandardCharsets.UTF_8;
     private static final String OUTPUT_EXTENSION = ".csv";
+
+    private static final String OUTPUT_FILE_DATE_FORMAT = "yyyyMMdd-HH";
+    private static final String OUTPUT_FILE_TIME_FORMAT = "mm:ss";
+    private static final String OUTPUT_FILE_PREFIX = "-fffc.csv";
 
     private FileUtils() {}
     
@@ -50,5 +56,13 @@ public class FileUtils {
             System.exit(1);
         }
         return null;
+    }
+
+    public static String getOutputFilePath() {
+        Date current = new Date();
+
+        return new SimpleDateFormat(OUTPUT_FILE_DATE_FORMAT).format(current) + "h" +
+                new SimpleDateFormat(OUTPUT_FILE_TIME_FORMAT).format(current) +
+                OUTPUT_FILE_PREFIX;
     }
 }

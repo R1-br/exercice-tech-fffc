@@ -1,14 +1,15 @@
-package com.csvmaker.core;
+package com.fffc.csvmaker.service;
 
-import com.csvmaker.enums.ColumnType;
-import com.csvmaker.model.Column;
-import com.csvmaker.util.FileUtils;
+import com.fffc.csvmaker.enums.ColumnType;
+import com.fffc.csvmaker.model.Column;
+import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@Service
 public class MetaDataParser {
 
     /**
@@ -35,8 +36,7 @@ public class MetaDataParser {
 
            return column;
         } catch (NumberFormatException _) {
-            System.err.println("Metadata line " + lineNumber + ": Invalid numeric value for size: " + parts[1] + ".");
-            System.exit(1);
+            throw new NumberFormatException("Metadata line " + lineNumber + ": Invalid numeric value for size: " + parts[1] + ".");
         } catch (IllegalArgumentException _) {
             System.err.println("Metadata line " + lineNumber + ": Unsupported column type:" + parts[2] + ".");
             System.exit(1);
@@ -49,9 +49,8 @@ public class MetaDataParser {
      * @param metaDataFilePath the path to the metadata file.
      * @return the list of columns.
      */
-    public List<Column> parse(String metaDataFilePath) {
+    public List<Column> parse(BufferedReader reader) {
         try {
-            BufferedReader reader = FileUtils.getReader(metaDataFilePath);
             List<Column> columns = new ArrayList<>();
             String line;
             int lineNumber = 1;
@@ -67,7 +66,8 @@ public class MetaDataParser {
 
             return columns;
         } catch (IOException e) {
-            System.err.println("Unknown Error reading MetaData file: " + metaDataFilePath + "\n\rSTACKTRACE:\n\r");
+            //TODO change exceptions
+            System.err.println("Unknown Error reading MetaData file: " + reader + "\n\rSTACKTRACE:\n\r");
             e.printStackTrace();
             System.exit(1);
         }

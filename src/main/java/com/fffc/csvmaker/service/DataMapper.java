@@ -1,8 +1,9 @@
-package com.csvmaker.core;
+package com.fffc.csvmaker.service;
 
-import com.csvmaker.enums.ColumnType;
-import com.csvmaker.model.Column;
-import com.csvmaker.util.StringUtils;
+import com.fffc.csvmaker.enums.ColumnType;
+import com.fffc.csvmaker.model.Column;
+import com.fffc.csvmaker.util.StringUtils;
+import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -13,6 +14,7 @@ import java.util.List;
 import static java.lang.Double.parseDouble;
 import static java.lang.Long.parseLong;
 
+@Service
 public class DataMapper {
     private static final String SEPARATOR = ",";
     private static final String INPUT_DATE_FORMAT = "yyyy-MM-dd";
