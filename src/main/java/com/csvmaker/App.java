@@ -10,12 +10,12 @@ public class App
 {
     public static void main( String[] args )
     {
-        if (args.length < 3) {
-            System.out.println("Usage: java -jar <metadata_file> <data_file> <output_file>");
+        if (args.length < 2) {
+            System.out.println("Usage: java -jar <metadata_file> <data_file>");
             System.exit(1);
         }
 
-        CsvStandaloneTransaction csvStandaloneTransaction = new CsvStandaloneTransaction(args[0], args[1], args[2]);
+        CsvStandaloneTransaction csvStandaloneTransaction = new CsvStandaloneTransaction(args[0], args[1]);
 
         try {
             csvStandaloneTransaction.process();

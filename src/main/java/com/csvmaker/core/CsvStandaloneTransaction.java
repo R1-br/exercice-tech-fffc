@@ -6,11 +6,18 @@ import com.csvmaker.util.FileUtils;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class CsvStandaloneTransaction {
     private static final String LINE_SEPARATOR = "\r\n";
+    private static final String OUTPUT_FILE_DATE_FORMAT = "yyyyMMdd-HH";
+    private static final String OUTPUT_FILE_TIME_FORMAT = "mm:ss";
+    private static final String OUTPUT_FILE_PREFIX = "-fffc.csv";
+    
     private final String metaDataFilePath;
     private final String dataFilePath;
     private final String outputFilePath;
@@ -18,10 +25,13 @@ public class CsvStandaloneTransaction {
     private final MetaDataParser metaDataParser = new MetaDataParser();
     private final DataMapper dataMapper = new DataMapper();
 
-    public CsvStandaloneTransaction(String metaDataFilePath, String dataFilePath, String outputFilePath) {
+    public CsvStandaloneTransaction(String metaDataFilePath, String dataFilePath) {
         this.metaDataFilePath = metaDataFilePath;
         this.dataFilePath = dataFilePath;
-        this.outputFilePath = outputFilePath;
+        Date current = new Date();
+        this.outputFilePath = new SimpleDateFormat(OUTPUT_FILE_DATE_FORMAT).format(current) + "h" +
+                new SimpleDateFormat(OUTPUT_FILE_TIME_FORMAT).format(current) +
+                OUTPUT_FILE_PREFIX;
     }
 
     private String generateHeaderLine(List<Column> columns) {
