@@ -1,6 +1,8 @@
 package com.csvmaker.core;
 
+import com.csvmaker.enums.ColumnType;
 import com.csvmaker.model.Column;
+import com.csvmaker.util.StringUtils;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -16,30 +18,15 @@ public class DataMapper {
     private static final String INPUT_DATE_FORMAT = "yyyy-MM-dd";
     private static final String OUTPUT_DATE_FORMAT = "dd/MM/yyyy";
 
-    /**
-     * Returns the index of the first non-numerical character in the input line
-     * or last character of the input line if no non-numerical character is found.
-     * @param inputLine the input line
-     * @return the index of the first non-numerical character or last character
-     */
-    private int getFirstNonNumericalIndex(String inputLine) {
-        int index = 0;
-
-        while (index < inputLine.length()
-                && (Character.isDigit(inputLine.charAt(index)) || inputLine.charAt(index) == '.' || inputLine.charAt(index) == '-')) {
-            index++;
-        }
-
-        return index;
-    }
+    private record CellContentAndCharCountToRemove(String cellContent, int charCountToRemove) {}
 
     private String processDate(Column column, String inputLine, int lineNumber) {
         String dateSubstring = inputLine.substring(0, Math.min(column.size(), inputLine.length()));
-        DateFormat dateFormat = new SimpleDateFormat(INPUT_DATE_FORMAT);
+        DateFormat inputDateFormat = new SimpleDateFormat(INPUT_DATE_FORMAT);
         DateFormat outputDateFormat = new SimpleDateFormat(OUTPUT_DATE_FORMAT);
 
         try {
-            Date date = dateFormat.parse(dateSubstring);
+            Date date = inputDateFormat.parse(dateSubstring);
 
             return outputDateFormat.format(date);
         } catch (ParseException _) {
@@ -50,7 +37,7 @@ public class DataMapper {
         return null;
     }
     private String processNumber(Column column, String inputLine, int lineNumber) {
-        String numberSubstring = inputLine.substring(0, Math.min(column.size(), getFirstNonNumericalIndex(inputLine)));
+        String numberSubstring = inputLine.substring(0, Math.min(column.size(), StringUtils.getFirstNonNumericalIndex(inputLine)));
 
         try {
             if (numberSubstring.contains(".")) {
@@ -65,14 +52,13 @@ public class DataMapper {
 
         return null;
     }
-    private String processString(Column column, String inputLine, boolean isQuoted) {
+    private String processString(Column column, String inputLine, boolean isQuoted, int nextQuoteIndex) {
         //Starting with double quotes -> quoted string, else normal string
         if (isQuoted) {
             inputLine = inputLine.substring(1);
-            int nextQuoteIndex = inputLine.indexOf("\"");
             //return all chars until the next double quote or end of line or max column size
             if (nextQuoteIndex > 0) {
-                return inputLine.substring(0, Math.min(inputLine.length() - 1, nextQuoteIndex));
+                return inputLine.substring(0, Math.min(inputLine.length() - 1, Math.min(nextQuoteIndex - 1, column.size())));
             } else {
                 return inputLine.substring(2, Math.min(inputLine.length() - 1, column.size()));
             }
@@ -86,6 +72,46 @@ public class DataMapper {
                 return inputLine.substring(0, minBetweenColumnSizeAndLength);
             }
         }
+    }
+
+    /**
+     * Map input to a csv Cell record.
+     * @param column the current column to map the cell from
+     * @param inputLine the input line string
+     * @param lineNumber current line (for logging purposes)
+     * @return the CSV string cell + the number of characters processed to remove from input
+     */
+    private CellContentAndCharCountToRemove mapCell(Column column, String inputLine, int lineNumber) {
+        boolean isQuoted = false;
+        int nextQuoteIndex = -1;
+
+        String cellContent = switch (column.type()) {
+            case DATE -> processDate(column, inputLine, lineNumber);
+            case NUMBER -> processNumber(column, inputLine, lineNumber);
+            case STRING -> {
+                isQuoted = inputLine.startsWith("\"");
+                nextQuoteIndex = inputLine.indexOf("\"", 1);
+                yield processString(column, inputLine, isQuoted, nextQuoteIndex);
+            }
+        };
+
+        if (cellContent == null || cellContent.isEmpty()) {
+            return null;
+        }
+
+        if (ColumnType.STRING.equals(column.type())) {
+            if (isQuoted) {
+                //if quoted, inputLine must truncate cellContent + 2 (for quotes)
+                // or until the nextQuote if the string was too long for the specified column length
+                return new CellContentAndCharCountToRemove(
+                        StringUtils.quoteString(cellContent),
+                        Math.min(inputLine.length() - 1, (Math.max(cellContent.length() + 2, nextQuoteIndex + 1))));
+            } else if (cellContent.contains(SEPARATOR)) {
+                return new CellContentAndCharCountToRemove(StringUtils.quoteString(cellContent), cellContent.length());
+            }
+        }
+
+        return new CellContentAndCharCountToRemove(cellContent, cellContent.length());
     }
     
     /**
@@ -101,21 +127,14 @@ public class DataMapper {
 
         for (Column column : columns) {
             inputLine = inputLine.trim();
-            boolean isQuoted = false;
-            String cellContent = switch (column.type()) {
-                case DATE -> processDate(column, inputLine, lineNumber);
-                case NUMBER -> processNumber(column, inputLine, lineNumber);
-                case STRING -> {
-                    isQuoted = inputLine.startsWith("\"");
-                    yield processString(column, inputLine, isQuoted);
-                }
-            };
-            if (!cellContent.isEmpty()) {
-                csvRecord.append(cellContent);
+
+            CellContentAndCharCountToRemove cellContentAndCharCountToRemove = mapCell(column, inputLine, lineNumber);
+
+            if (cellContentAndCharCountToRemove != null) {
+                inputLine = inputLine.substring(Math.min(inputLine.length(), cellContentAndCharCountToRemove.charCountToRemove()));
+                csvRecord.append(cellContentAndCharCountToRemove.cellContent());
             }
-            
-            inputLine = inputLine.substring(Math.min(inputLine.length(), cellContent.length() + (isQuoted ? 2 : 0)));
-            
+
             if (inputLine.isEmpty()) {
                 break;
             }
