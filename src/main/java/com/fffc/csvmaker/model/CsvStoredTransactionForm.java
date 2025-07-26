@@ -1,3 +1,10 @@
 package com.fffc.csvmaker.model;
 
-public record CsvStoredTransactionForm(String metadataFilePath, String dataFilePath) {}
+import lombok.NonNull;
+
+public record CsvStoredTransactionForm(
+        @NonNull
+        String metadataFilePath,
+        @NonNull
+        String dataFilePath
+) {}

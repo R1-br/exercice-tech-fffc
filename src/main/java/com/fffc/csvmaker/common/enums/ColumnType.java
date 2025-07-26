@@ -1,4 +1,4 @@
-package com.fffc.csvmaker.enums;
+package com.fffc.csvmaker.common.enums;
 
 import java.util.Arrays;
 

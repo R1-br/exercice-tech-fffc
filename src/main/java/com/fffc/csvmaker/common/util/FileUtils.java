@@ -1,4 +1,4 @@
-package com.fffc.csvmaker.util;
+package com.fffc.csvmaker.common.util;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -22,17 +22,14 @@ public class FileUtils {
      * @param filePath the file path
      * @return a BufferedReader for the given file
      */
-    public static BufferedReader getReader(String filePath) {
+    public static BufferedReader getReader(String filePath) throws FileNotFoundException {
         try {
             InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(filePath), INPUT_ENCODING);
             
             return new BufferedReader(inputStreamReader);
         } catch (FileNotFoundException _) {
-            System.err.println("File not found: " + filePath);
-            System.exit(1);
+            throw new FileNotFoundException("File not found: " + filePath);
         }
-
-        return null;
     }
 
     /**
@@ -40,7 +37,7 @@ public class FileUtils {
      * @param filePath the file path
      * @return a BufferedWriter for the given file
      */
-    public static BufferedWriter getWriter(String filePath) {
+    public static BufferedWriter getWriter(String filePath) throws IOException {
         File file = new File(
                 filePath.endsWith(OUTPUT_EXTENSION) ? filePath : filePath + OUTPUT_EXTENSION
         );
@@ -52,10 +49,8 @@ public class FileUtils {
             
             return new BufferedWriter(outputStreamWriter);
         } catch (IOException _) {
-            System.err.println("Failed to create Output operation: " + filePath);
-            System.exit(1);
+            throw new IOException("Failed to create Output operation: " + filePath);
         }
-        return null;
     }
 
     public static String getOutputFilePath() {

@@ -1,4 +1,4 @@
-package com.fffc.csvmaker.util;
+package com.fffc.csvmaker.common.util;
 
 public class StringUtils {
     private static final String DOUBLE_QUOTES = "\"";
@@ -22,6 +22,11 @@ public class StringUtils {
         return index;
     }
 
+    /**
+     * Returns the input string quoted with double quotes.
+     * @param input the input string
+     * @return the quoted string
+     */
     public static String quoteString(String input) {
         return DOUBLE_QUOTES + input + DOUBLE_QUOTES;
     }

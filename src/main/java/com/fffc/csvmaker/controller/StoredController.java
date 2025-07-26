@@ -2,12 +2,14 @@ package com.fffc.csvmaker.controller;
 
 import com.fffc.csvmaker.model.CsvStoredTransactionForm;
 import com.fffc.csvmaker.service.CsvService;
-import com.fffc.csvmaker.util.FileUtils;
+import com.fffc.csvmaker.common.util.FileUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.text.ParseException;
 
 @Controller
 @RequestMapping("/api/v1/csv-maker/stored")
@@ -28,7 +31,7 @@ public class StoredController {
     }
 
     @PostMapping(value = "/process", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> processStoredCsv(@RequestBody CsvStoredTransactionForm transactionForm) throws IOException {
+    public ResponseEntity<String> processStoredCsv(@RequestBody CsvStoredTransactionForm transactionForm) throws IOException, ParseException {
         //Init I/O streams
         BufferedReader dataReader = FileUtils.getReader(transactionForm.dataFilePath());
         BufferedReader metadataReader = FileUtils.getReader(transactionForm.metadataFilePath());
@@ -39,5 +42,4 @@ public class StoredController {
 
         return ResponseEntity.ok(outputFilePath);
     }
-
 }

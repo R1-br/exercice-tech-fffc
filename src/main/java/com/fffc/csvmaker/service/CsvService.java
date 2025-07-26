@@ -4,6 +4,7 @@ import com.fffc.csvmaker.model.Column;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.text.ParseException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,7 +26,7 @@ public class CsvService {
                 .collect(Collectors.joining(","));
     }
 
-    public String process(BufferedReader metaDataReader, BufferedReader dataReader, Writer writer) throws IOException {
+    public String process(BufferedReader metaDataReader, BufferedReader dataReader, Writer writer) throws IOException, ParseException {
         //Parse and get columns
         List<Column> columns = metaDataParser.parse(metaDataReader);
 
