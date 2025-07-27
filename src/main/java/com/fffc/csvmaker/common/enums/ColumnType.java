@@ -7,8 +7,8 @@ public enum ColumnType {
     DATE("date"),
     NUMBER("numérique");
 
-
     final String type;
+
     ColumnType(String type) {
         this.type = type;
     }

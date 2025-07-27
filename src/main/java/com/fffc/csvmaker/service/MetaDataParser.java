@@ -2,21 +2,15 @@ package com.fffc.csvmaker.service;
 
 import com.fffc.csvmaker.common.enums.ColumnType;
 import com.fffc.csvmaker.common.exceptions.MetaDataParsingException;
-import com.fffc.csvmaker.controller.StoredController;
 import com.fffc.csvmaker.model.Column;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Service
 public class MetaDataParser {
-    private final Logger logger = LoggerFactory.getLogger(MetaDataParser.class);
-
     /**
      * Parses a line from the metadata file and returns a Column object (name, size, type).
      * @param line the line from the metadata file.

@@ -2,8 +2,10 @@ package com.fffc.csvmaker.controller;
 
 import com.fffc.csvmaker.service.CsvService;
 import com.fffc.csvmaker.common.util.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -20,16 +22,21 @@ import java.text.ParseException;
 
 @Controller
 @RequestMapping("/api/v1/csv-maker/standalone")
+@Tag(name = "Standalone csv processing API")
 public class StandaloneController {
-    private final Logger logger = LoggerFactory.getLogger(StandaloneController.class);
-
     private final CsvService csvService;
 
     public StandaloneController(CsvService csvService) {
         this.csvService = csvService;
     }
 
-    @PostMapping(value = "/process", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Process a csv parsing on UTF-8 encoded files inside form (max 1MB size)", description = "Parses and returns the output csv file in response body.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "The output csv is in response Body"),
+            @ApiResponse(responseCode = "400", description = "Error while parsing or processing input files."),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error.")
+    })
+    @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> processStandaloneCsv(@RequestParam(value = "metadataFile") MultipartFile metadataFile,
                                                       @RequestParam(value = "dataFile") MultipartFile dataFile) throws IOException, ParseException {
         BufferedReader metadataReader = new BufferedReader(
