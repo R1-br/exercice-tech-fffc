@@ -12,7 +12,7 @@
 	<artifactId>csvmaker</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>csvmaker</name>
-	<description>Demo project for Spring Boot</description>
+	<description>CSV parsing api</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -52,10 +52,16 @@
 			<artifactId>swagger-annotations</artifactId>
 			<version>2.2.34</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/io.swagger.core.v3/swagger-models -->
+		<dependency>
+			<groupId>io.swagger.core.v3</groupId>
+			<artifactId>swagger-models</artifactId>
+			<version>2.2.34</version>
+		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui -->
 		<!-- WARNING Apache common langs (dependency version used by springdoc-openapi-starter-webmvc-ui) has some vulnerabilties -->
-		<!-- for enabling swagger ui and json endpoints you need it, but for prod deployment comment this and use above swagger-annotations dependency -->
+		<!-- Needed for enabling swagger ui and json endpoints, but for PROD deployment comment this and use above swagger-models & swagger-annotations dependency -->
 <!--		<dependency>-->
 <!--			<groupId>org.springdoc</groupId>-->
 <!--			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>-->

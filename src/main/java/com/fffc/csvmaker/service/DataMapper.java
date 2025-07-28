@@ -46,7 +46,7 @@ public class DataMapper {
             return numberSubstring.contains(".") ?
                     Double.toString(parseDouble(numberSubstring)) : Long.toString(parseLong(numberSubstring));
         } catch (NumberFormatException _) {
-            throw new NumberFormatException("Invalid Number at line " + lineNumber + "for column " + column.name() + ": " + numberSubstring);
+            throw new NumberFormatException("Invalid Number at line " + lineNumber + " for column " + column.name() + ": " + inputLine);
         }
     }
     private String processString(Column column, String inputLine, int nextSpaceIndex) {

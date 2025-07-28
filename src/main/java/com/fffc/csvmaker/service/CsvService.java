@@ -15,7 +15,7 @@ public class CsvService {
     private final MetaDataParser metaDataParser;
     private final DataMapper dataMapper;
 
-    private CsvService(MetaDataParser metaDataParser, DataMapper dataMapper) {
+    public CsvService(MetaDataParser metaDataParser, DataMapper dataMapper) {
         this.metaDataParser = metaDataParser;
         this.dataMapper = dataMapper;
     }

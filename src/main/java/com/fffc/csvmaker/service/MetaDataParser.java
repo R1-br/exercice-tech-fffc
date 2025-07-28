@@ -22,7 +22,7 @@ public class MetaDataParser {
 
         if (parts.length < 3) {
             throw (new MetaDataParsingException(
-                    "MetaData file line " + lineNumber + ": Expected 3 comma-separated fields, found " + parts.length + "."
+                    "MetaData file line " + lineNumber + ". Expected 3 comma-separated fields, found " + parts.length + "."
             ));
         }
 
@@ -31,15 +31,15 @@ public class MetaDataParser {
 
            if (column.size() <= 0) {
                throw (new MetaDataParsingException(
-                       "MetaData file line " + lineNumber + "Invalid size: " + parts[1] + ". Size must be a positive integer."
+                       "MetaData file line " + lineNumber + ". Invalid size: " + parts[1] + ". Size must be a positive integer."
                ));
            }
 
            return column;
         } catch (NumberFormatException _) {
-            throw new NumberFormatException("Metadata line " + lineNumber + ": Invalid numeric value for size: " + parts[1] + ".");
+            throw new NumberFormatException("Metadata line " + lineNumber + ". Invalid numeric value for size: " + parts[1] + ".");
         } catch (IllegalArgumentException _) {
-            throw new IllegalArgumentException("Metadata line " + lineNumber + "Unsupported column type: " + parts[2] + ".");
+            throw new IllegalArgumentException("Metadata line " + lineNumber + ". Unsupported column type: " + parts[2] + ".");
         }
     }
 

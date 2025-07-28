@@ -21,7 +21,7 @@ import java.text.ParseException;
 
 @Controller
 @RequestMapping("/api/v1/csv-maker/stored")
-@Tag(name = "Stored csv processing API")
+@Tag(name = "Stored")
 public class StoredController {
     private final CsvService csvService;
 

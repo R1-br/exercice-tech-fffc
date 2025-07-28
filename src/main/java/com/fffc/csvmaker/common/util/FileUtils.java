@@ -6,7 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class FileUtils {
+public final class FileUtils {
     public static final Charset INPUT_ENCODING = StandardCharsets.UTF_8;
     public static final Charset OUTPUT_ENCODING = StandardCharsets.UTF_8;
     private static final String OUTPUT_EXTENSION = ".csv";

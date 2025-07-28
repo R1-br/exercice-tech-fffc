@@ -1,5 +1,6 @@
 package com.fffc.csvmaker.controller;
 
+import com.fffc.csvmaker.common.util.StringUtils;
 import com.fffc.csvmaker.service.CsvService;
 import com.fffc.csvmaker.common.util.FileUtils;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,15 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
+import java.io.*;
 import java.text.ParseException;
 
 @Controller
 @RequestMapping("/api/v1/csv-maker/standalone")
-@Tag(name = "Standalone csv processing API")
+@Tag(name = "Standalone")
 public class StandaloneController {
     private final CsvService csvService;
 
@@ -48,6 +46,8 @@ public class StandaloneController {
 
         String content = csvService.process(metadataReader, dataReader, new StringWriter());
 
-        return ResponseEntity.ok(content);
+        return ResponseEntity.ok(
+                StringUtils.encodeString(content, FileUtils.OUTPUT_ENCODING)
+        );
     }
 }

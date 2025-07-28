@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.io.FileNotFoundException;
 import java.text.ParseException;
@@ -16,6 +17,12 @@ public class ExceptionHandlerController {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleError(HttpServletRequest req, Exception ex) {
+        if (ex instanceof NoResourceFoundException) {
+            logger.info(req.getRequestURI() + " : 404");
+
+            return ResponseEntity.notFound().build();
+        }
+
         String message = "Request %1$s raised %2$s .Error Message: %3$s".formatted(
                 req.getRequestURL().toString(), ex, ex.getMessage()
         );
