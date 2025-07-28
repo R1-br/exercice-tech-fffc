@@ -3,6 +3,8 @@ package com.fffc.csvmaker.common.util;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -53,11 +55,22 @@ public final class FileUtils {
         }
     }
 
-    public static String getOutputFilePath() {
+    /**
+     * Creates the output file path based on the base file path and create directories if necessary
+     * @param baseFilePath the base file path
+     * @return the output file path
+     */
+    public static String getOutputFilePath(String baseFilePath) throws IOException {
+        try {
+            Files.createDirectories(Paths.get(baseFilePath));
+        } catch (IOException e) {
+            throw new IOException("Failed to create directories for path: " + baseFilePath, e);
+        }
         Date current = new Date();
 
-        return new SimpleDateFormat(OUTPUT_FILE_DATE_FORMAT).format(current) + "h" +
+        return baseFilePath.concat(baseFilePath.charAt(baseFilePath.length() - 1) != '/' ? "/" : "")
+                .concat(new SimpleDateFormat(OUTPUT_FILE_DATE_FORMAT).format(current) + "h" +
                 new SimpleDateFormat(OUTPUT_FILE_TIME_FORMAT).format(current) +
-                OUTPUT_FILE_PREFIX;
+                OUTPUT_FILE_PREFIX);
     }
 }
