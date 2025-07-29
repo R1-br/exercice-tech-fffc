@@ -25,7 +25,7 @@ public class ExceptionHandlerController {
     /**
      * Form Validation Exception Handler
      * @param ex the exception
-     * @return a 500 response  with the error message
+     * @return a 400 response  with the error message
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -42,6 +42,12 @@ public class ExceptionHandlerController {
         );
     }
 
+    /**
+     * Default Exception Handler
+     * @param req the HTTP request where the exception raised
+     * @param ex the exception
+     * @return Json obect with error message
+     */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseForm> handleError(HttpServletRequest req, Exception ex) {
         if (ex instanceof NoResourceFoundException) {
