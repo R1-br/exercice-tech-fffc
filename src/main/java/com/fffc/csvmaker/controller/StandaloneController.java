@@ -1,6 +1,7 @@
 package com.fffc.csvmaker.controller;
 
 import com.fffc.csvmaker.common.util.StringUtils;
+import com.fffc.csvmaker.model.ValidResponseForm;
 import com.fffc.csvmaker.service.CsvService;
 import com.fffc.csvmaker.common.util.FileUtils;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,9 +35,9 @@ public class StandaloneController {
             @ApiResponse(responseCode = "400", description = "Error while parsing or processing input files."),
             @ApiResponse(responseCode = "500", description = "Internal Server Error.")
     })
-    @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
-    public ResponseEntity<String> processStandaloneCsv(@RequestParam(value = "metadataFile") MultipartFile metadataFile,
-                                                      @RequestParam(value = "dataFile") MultipartFile dataFile) throws IOException, ParseException {
+    @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ValidResponseForm> processStandaloneCsv(@RequestParam(value = "metadataFile") MultipartFile metadataFile,
+                                                                  @RequestParam(value = "dataFile") MultipartFile dataFile) throws IOException, ParseException {
         BufferedReader metadataReader = new BufferedReader(
                 new InputStreamReader(metadataFile.getInputStream(), FileUtils.INPUT_ENCODING)
         );
@@ -47,7 +48,7 @@ public class StandaloneController {
         String content = csvService.process(metadataReader, dataReader, new StringWriter());
 
         return ResponseEntity.ok(
-                StringUtils.encodeString(content, FileUtils.OUTPUT_ENCODING)
+                new ValidResponseForm(StringUtils.encodeString(content, FileUtils.OUTPUT_ENCODING))
         );
     }
 }

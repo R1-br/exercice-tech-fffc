@@ -1,10 +1,11 @@
 package com.fffc.csvmaker.model;
 
-import lombok.NonNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 
 public record CsvStoredTransactionForm(
-        @NonNull
+        @NotEmpty(message = "metadataFilePath required") @NotBlank(message = "metadataFilePath required")
         String metadataFilePath,
-        @NonNull
+        @NotEmpty(message = "dataFilePath required") @NotBlank(message = "dataFilePath required")
         String dataFilePath
 ) {}

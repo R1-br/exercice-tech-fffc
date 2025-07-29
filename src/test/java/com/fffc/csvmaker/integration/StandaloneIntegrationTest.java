@@ -1,6 +1,8 @@
 package com.fffc.csvmaker.integration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fffc.csvmaker.controller.StandaloneController;
+import com.fffc.csvmaker.model.ValidResponseForm;
 import com.fffc.csvmaker.service.CsvService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,7 +31,7 @@ class StandaloneIntegrationTest {
     );
 
     @Test
-    void testProcessCsv() throws Exception {
+    void testProcessStandaloneCsv() throws Exception {
         MockMultipartFile metadataFile = new MockMultipartFile("metadataFile", "metadata", "application/octet-stream", """
                 Date de naissance,10,date
                 Prénom,15,chaîne
@@ -47,12 +49,19 @@ class StandaloneIntegrationTest {
                 .file(dataFile)).getMvcResult();
 
         assertEquals(200, result.getResponse().getStatus());
-        assertEquals("text/plain;charset=UTF-8", result.getResponse().getContentType());
+        assertEquals("application/json", result.getResponse().getContentType());
+
+        //Map response to json
+        ObjectMapper objectMapper = new ObjectMapper();
+        String responseBody = result.getResponse().getContentAsString();
+        ValidResponseForm form = objectMapper.readValue(responseBody, ValidResponseForm.class);
+
+
         assertEquals("""
                 Date de naissance,Prénom,Nom de famille,Poids
                 01/01/1970,John,Smith,81.5
                 31/01/1975,Jane,Doe,61.1
                 28/11/1988,Bob,Big,102.4
-                """.replace("\n", "\r\n"), result.getResponse().getContentAsString());
+                """.replace("\n", "\r\n"), form.output());
     }
 }
