@@ -1,6 +1,7 @@
 package com.fffc.csvmaker.service;
 
 import com.fffc.csvmaker.common.enums.ColumnType;
+import com.fffc.csvmaker.common.exceptions.DataProcessingException;
 import com.fffc.csvmaker.model.Column;
 import com.fffc.csvmaker.common.util.StringUtils;
 import org.slf4j.Logger;
@@ -18,18 +19,22 @@ import static java.lang.Long.parseLong;
 
 @Service
 public class DataMapper {
-    private final Logger logger = LoggerFactory.getLogger(DataMapper.class);
-
     private static final String SEPARATOR = ",";
     private static final String INPUT_DATE_FORMAT = "yyyy-MM-dd";
     private static final String OUTPUT_DATE_FORMAT = "dd/MM/yyyy";
+
+    private final DateFormat inputDateFormat;
+    private final DateFormat outputDateFormat;
+
+    public DataMapper() {
+        this.inputDateFormat = new SimpleDateFormat(INPUT_DATE_FORMAT);
+        this.outputDateFormat = new SimpleDateFormat(OUTPUT_DATE_FORMAT);
+    }
 
     private record CellContentAndCharCountToRemove(String cellContent, int charCountToRemove) {}
 
     private String processDate(Column column, String inputLine, int lineNumber) throws ParseException {
         String dateSubstring = inputLine.substring(0, Math.min(column.size(), inputLine.length()));
-        DateFormat inputDateFormat = new SimpleDateFormat(INPUT_DATE_FORMAT);
-        DateFormat outputDateFormat = new SimpleDateFormat(OUTPUT_DATE_FORMAT);
 
         try {
             Date date = inputDateFormat.parse(dateSubstring);
@@ -143,9 +148,7 @@ public class DataMapper {
         }
 
         if (columnIndex != columns.size()) {
-           logger.warn("No enough data found at line " + lineNumber + " to match the specified columns. Skipping this line.");
-
-            return null;
+            throw new DataProcessingException("Invalid data found at line " + lineNumber + " to match the specified columns.");
         }
 
         return csvRecord.toString();
