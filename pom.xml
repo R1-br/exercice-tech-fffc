@@ -11,7 +11,7 @@
 	<groupId>com.fffc</groupId>
 	<artifactId>csvmaker</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>csvmaker</name>
+	<name>csv-maker</name>
 	<description>CSV parsing api</description>
 	<url/>
 	<licenses>
@@ -28,6 +28,9 @@
 	</scm>
 	<properties>
 		<java.version>24</java.version>
+		<maven.compiler.proc>full</maven.compiler.proc> <!-- for Lombok & Java 23 compat -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -40,6 +43,7 @@
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -69,19 +73,8 @@
 <!--		</dependency>-->
 	</dependencies>
 	<build>
+		<finalName>csv-maker</finalName>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<annotationProcessorPaths>
-						<path>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</path>
-					</annotationProcessorPaths>
-				</configuration>
-			</plugin>
 			<plugin>
 				<groupId>org.graalvm.buildtools</groupId>
 				<artifactId>native-maven-plugin</artifactId>
